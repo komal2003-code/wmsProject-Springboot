@@ -3,7 +3,7 @@ package com.wms.entity;
 import jakarta.persistence.*;
 
 @Entity
-public class product {
+public class Product {
 
     public Long getId() {
 		return id;
