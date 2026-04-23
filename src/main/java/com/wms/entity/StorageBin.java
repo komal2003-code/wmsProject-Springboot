@@ -34,11 +34,30 @@ public class StorageBin {
 		this.warehouse = warehouse;
 	}
 
+	public int getCapacity() {
+		return capacity;
+	}
+
+	public void setCapacity(int capacity) {
+		this.capacity = capacity;
+	}
+
+	public int getUsed() {
+		return used;
+	}
+
+	public void setUsed(int used) {
+		this.used = used;
+	}
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String binCode;
+    
+    private int capacity;
+    private int used = 0;
 
     @ManyToOne
     @JoinColumn(name = "warehouse_id")

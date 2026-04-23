@@ -13,6 +13,9 @@ public class InventoryItem {
     private Long id;
 
     private int quantity;
+    
+    @Version
+    private int version;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
@@ -52,5 +55,13 @@ public class InventoryItem {
 
 	public void setStorageBin(StorageBin storageBin) {
 		this.storageBin = storageBin;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
 	}
 }

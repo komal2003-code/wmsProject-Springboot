@@ -3,13 +3,14 @@ package com.wms.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.wms.dto.InventoryRequest;
+import com.wms.dto.ReceivingRequest;
 import com.wms.entity.InventoryItem;
 import com.wms.entity.Product;
 import com.wms.entity.StorageBin;
 import com.wms.repository.InventoryItemRepository;
 import com.wms.repository.ProductRepository;
 import com.wms.repository.StorageBinRepository;
+import com.wms.service.ReceivingServicee;
 
 import java.util.List;
 
@@ -21,28 +22,12 @@ public class InventoryItemController {
     private InventoryItemRepository repo;
 
     @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private StorageBinRepository storageBinRepository;
+    private ReceivingServicee receivingService;
 
     @PostMapping
-    public InventoryItem create(@RequestBody InventoryRequest req) {
-
-        Product p = productRepository.findById(req.productId)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-
-        StorageBin b = storageBinRepository.findById(req.storageBinId)
-                .orElseThrow(() -> new RuntimeException("StorageBin not found"));
-
-        InventoryItem i = new InventoryItem();
-        i.setQuantity(req.quantity);
-        i.setProduct(p);
-        i.setStorageBin(b);
-
-        return repo.save(i);
+    public String receive(@RequestBody ReceivingRequest req) {
+        return receivingService.receiveStock(req);
     }
-    
     @GetMapping
     public List<InventoryItem> getAll() {
         return repo.findAll();
