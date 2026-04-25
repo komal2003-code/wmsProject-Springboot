@@ -4,8 +4,8 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.wms.entity.InventoryItem;
 import com.wms.entity.Product;
-import com.wms.entity.StorageBin;
+//import com.wms.entity.StorageBin;
 
 public interface InventoryItemRepository extends JpaRepository<InventoryItem, Long> {
-	Optional<InventoryItem> findByProductAndStorageBin(Product product, StorageBin storageBin);
+	Optional<InventoryItem> findByProduct(Product product);
 }

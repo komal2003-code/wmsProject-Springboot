@@ -44,7 +44,7 @@ public class ReceivingServicee {
 
         // ✅ 4. Check if inventory already exists
         Optional<InventoryItem> existing =
-                inventoryRepository.findByProductAndStorageBin(product, bin);
+                inventoryRepository.findByProduct(product);
 
         if (existing.isPresent()) {
             InventoryItem item = existing.get();

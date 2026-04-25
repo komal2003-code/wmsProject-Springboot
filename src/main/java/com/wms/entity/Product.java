@@ -36,6 +36,15 @@ public class Product {
     private String name;
     private String sku;
     private int quantity;
+    
+    private String barcodePath;
+
+	public String getBarcodePath() {
+		return barcodePath;
+	}
+	public void setBarcodePath(String barcodePath) {
+		this.barcodePath = barcodePath;
+	}
 
     
 }

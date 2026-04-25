@@ -4,6 +4,7 @@ package com.wms.exception;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import java.util.HashMap;
+import org.springframework.http.ResponseEntity;
 import java.util.Map;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
@@ -27,4 +28,8 @@ public class GlobalExceptionHandler {
     public String handleRuntime(RuntimeException ex) {
         return ex.getMessage();
     }
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<String> handleStock(InsufficientStockException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+}
 }
