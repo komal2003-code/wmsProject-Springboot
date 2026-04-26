@@ -8,6 +8,7 @@ import com.wms.entity.InventoryItem;
 import com.wms.entity.Product;
 import com.wms.exception.InsufficientStockException;
 import com.wms.repository.InventoryItemRepository;
+import com.wms.repository.ProductRepository;
 
 @Service
 public class OrderService {
@@ -15,19 +16,26 @@ public class OrderService {
     @Autowired
     private InventoryItemRepository inventoryRepo;
 
+    @Autowired
+    private ProductRepository productRepo;
+
     @Transactional
-    public String processOrder(Product product, int qty) {
+    public String processOrder(Long productId, int qty) {
 
-    	InventoryItem inventory = inventoryRepo
-    	        .findByProduct(product)
-    	        .orElseThrow(() -> new RuntimeException("Inventory not found"));
+        // ✅ Product fetch
+        Product product = productRepo.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        // 🔥 stock check
+        // ✅ Inventory fetch
+        InventoryItem inventory = inventoryRepo.findByProduct(product)
+                .orElseThrow(() -> new RuntimeException("Inventory not found"));
+
+        // ✅ Stock check
         if (inventory.getQuantity() < qty) {
             throw new InsufficientStockException("Stock not available");
         }
 
-        // 🔥 reduce stock
+        // ✅ Reduce stock
         inventory.setQuantity(inventory.getQuantity() - qty);
 
         inventoryRepo.save(inventory);
