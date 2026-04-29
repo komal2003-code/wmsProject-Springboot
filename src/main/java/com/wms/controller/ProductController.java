@@ -17,15 +17,11 @@ public class ProductController {
     private ProductRepository repo;
 
     @Autowired
-    private ProductService service; // ✅ ADD THIS
+    private ProductService service; 
 
     @PostMapping
     public Product addProduct(@RequestBody Product p) {
 
-        // ❌ old wrong
-        // return repo.save(p);
-
-        // ✅ correct
         return service.addProduct(p);
     }
 
@@ -33,13 +29,13 @@ public class ProductController {
     public List<Product> getAll() {
         return repo.findAll();
     }
- // ✅ GET single product
+ // GET single product
     @GetMapping("/{id}")
     public Product getOne(@PathVariable Long id) {
         return repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Not found"));
     }
- // ✅ UPDATE product
+ // UPDATE product
     @PutMapping("/{id}")
     public Product update(@PathVariable Long id, @RequestBody Product p) {
 
@@ -51,7 +47,7 @@ public class ProductController {
         return repo.save(existing);
     }
 
-    // ✅ DELETE product
+    // DELETE product
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id) {
         repo.deleteById(id);

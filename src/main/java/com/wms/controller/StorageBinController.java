@@ -1,6 +1,6 @@
 package com.wms.controller;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 import com.wms.entity.StorageBin;
 import com.wms.repository.StorageBinRepository;
@@ -38,6 +38,9 @@ public class StorageBinController {
         }
         return null;
     }
+    
+  
+
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id) {

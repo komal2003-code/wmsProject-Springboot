@@ -4,10 +4,10 @@ package com.wms.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
-//import lombok.Data;
+
 
 @Entity
-//@Data
+
 public class StorageBin {
 
     public Long getId() {

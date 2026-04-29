@@ -2,10 +2,9 @@
 package com.wms.entity;
 
 import jakarta.persistence.*;
-//import lombok.Data;
+
 
 @Entity
-//@Data
 public class InventoryItem {
 
     @Id

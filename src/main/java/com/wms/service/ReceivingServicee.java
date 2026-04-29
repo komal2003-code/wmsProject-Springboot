@@ -1,5 +1,5 @@
 package com.wms.service;
-
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,16 +33,22 @@ public class ReceivingServicee {
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        // ✅ 2. Get bin (temporary fixed bin)
-        StorageBin bin = storageBinRepository.findById(1L)
-                .orElseThrow(() -> new RuntimeException("No bin available"));
+        // ✅ 2. Get available bins (LIST 🔥)
+        List<StorageBin> bins = storageBinRepository.findAvailableBins();
 
-        // ✅ 3. Capacity check
+        if (bins.isEmpty()) {
+            throw new RuntimeException("No bin available");
+        }
+
+        // ✅ 3. Pick first bin
+        StorageBin bin = bins.get(0);
+
+        // ✅ 4. Capacity check
         if (bin.getUsed() + request.getQuantity() > bin.getCapacity()) {
             throw new RuntimeException("Bin capacity exceeded");
         }
 
-        // ✅ 4. Check if inventory already exists
+        // ✅ 5. Inventory update
         Optional<InventoryItem> existing =
                 inventoryRepository.findByProduct_Id(product.getId());
 
@@ -58,7 +64,7 @@ public class ReceivingServicee {
             inventoryRepository.save(item);
         }
 
-        // ✅ 5. Update bin usage
+        // ✅ 6. Update bin usage
         bin.setUsed(bin.getUsed() + request.getQuantity());
         storageBinRepository.save(bin);
 
