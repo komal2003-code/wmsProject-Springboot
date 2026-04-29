@@ -18,12 +18,12 @@ public class JwtUtil {
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
-                .signWith(key)
+                .signWith(key, SignatureAlgorithm.HS256)   
                 .compact();
     }
 
     public String extractUsername(String token) {
-        return Jwts.parserBuilder()
+        return Jwts.parserBuilder()   
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
