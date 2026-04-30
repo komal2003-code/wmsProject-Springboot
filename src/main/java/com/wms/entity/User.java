@@ -1,8 +1,9 @@
 package com.wms.entity;
 
 import jakarta.persistence.Id;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-
+@Entity
 public class User {
     @Id
     @GeneratedValue
