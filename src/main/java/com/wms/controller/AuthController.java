@@ -7,7 +7,7 @@ import com.wms.util.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -36,7 +36,9 @@ public class AuthController {
 
         return jwtUtil.generateToken(user.getUsername());
     }
+    
     @GetMapping("/hello")
+    @PreAuthorize("hasRole('ADMIN')")
     public String hello() {
         return "Hello Admin";
     }
