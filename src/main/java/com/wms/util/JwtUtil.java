@@ -10,7 +10,7 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private final String SECRET = "mysecretkeymysecretkeymysecretkey123"; // min 32 chars
+    private final String SECRET = "mysecretkeymysecretkeymysecretkey123";
 
     private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());
 
@@ -24,11 +24,14 @@ public class JwtUtil {
     }
 
     public String extractUsername(String token) {
+        return extractAllClaims(token).getSubject();
+    }
+
+    public Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(key)
+                .setSigningKey(key) 
                 .build()
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .getBody();
     }
 }
