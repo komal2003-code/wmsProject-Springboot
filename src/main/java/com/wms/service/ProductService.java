@@ -2,6 +2,7 @@ package com.wms.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.wms.entity.Product;
 import com.wms.entity.InventoryItem;
@@ -40,7 +41,7 @@ public class ProductService {
         // 4. save product
         Product savedProduct = repo.save(product);
 
-        // 5. AUTO create inventory (🔥 IMPORTANT FOR WMS)
+        // 5. AUTO create inventory
         InventoryItem inventory = new InventoryItem();
         inventory.setProduct(savedProduct);
         inventory.setQuantity(savedProduct.getQuantity());
@@ -48,5 +49,18 @@ public class ProductService {
         inventoryRepo.save(inventory);
 
         return savedProduct;
+    }
+
+    // ✅ DELETE PRODUCT (FIXED)
+    @Transactional
+    public void deleteProduct(Long id) {
+
+        // Step 1: delete inventory first (child)
+        inventoryRepo.deleteByProductId(id);
+
+       
+
+        // Step 3: delete product (parent)
+        repo.deleteById(id);
     }
 }

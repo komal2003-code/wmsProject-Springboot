@@ -34,7 +34,10 @@ public class AuthController {
             throw new RuntimeException("Invalid credentials");
         }
 
-        return jwtUtil.generateToken(user.getUsername());
+        return jwtUtil.generateToken(
+                dbUser.getUsername(),
+                dbUser.getRole()
+        );
     }
     
     @GetMapping("/hello")

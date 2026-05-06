@@ -50,7 +50,7 @@ public class ReceivingServicee {
 
         // ✅ 5. Inventory update
         Optional<InventoryItem> existing =
-                inventoryRepository.findByProduct_Id(product.getId());
+                inventoryRepository.findByProductId(product.getId());
 
         if (existing.isPresent()) {
             InventoryItem item = existing.get();

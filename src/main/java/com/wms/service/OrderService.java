@@ -37,7 +37,7 @@ public class OrderService {
         System.out.println("Incoming productId = " + product.getId());
 
         // 2. Inventory fetch
-        InventoryItem inventory = inventoryRepo.findByProduct_Id(product.getId())
+        InventoryItem inventory = inventoryRepo.findByProductId(product.getId())
                 .orElseThrow(() -> new RuntimeException("Inventory not found"));
 
         System.out.println("Inventory found for product = " + product.getId());
