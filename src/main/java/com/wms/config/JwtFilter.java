@@ -16,7 +16,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
-
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -34,8 +33,18 @@ public class JwtFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String header = request.getHeader("Authorization");
+     // 👇 ADD THIS HERE (IMPORTANT)
+        String path = request.getRequestURI();
+        
 
-        // 🔥 If no token → skip filter
+        // Skip JWT for public endpoints + static files
+        if (path.startsWith("/barcodes/")
+                || path.startsWith("/auth/")
+                || path.startsWith("/error")){
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         if (header == null || !header.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -45,7 +54,8 @@ public class JwtFilter extends OncePerRequestFilter {
             String token = header.substring(7);
             String username = jwtUtil.extractUsername(token);
 
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (username != null &&
+                SecurityContextHolder.getContext().getAuthentication() == null) {
 
                 var user = userService.findByUsername(username);
 
@@ -53,12 +63,13 @@ public class JwtFilter extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(
                                 username,
                                 null,
-                                List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole()))
+                                List.of(new SimpleGrantedAuthority(
+                                        "ROLE_" + user.getRole().toUpperCase()
+                                ))
                         );
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
 
-                // 🔥 Debug (remove later)
                 System.out.println("USER: " + username);
                 System.out.println("ROLE: " + user.getRole());
             }
@@ -70,3 +81,4 @@ public class JwtFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
+

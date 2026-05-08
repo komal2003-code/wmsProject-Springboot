@@ -50,6 +50,9 @@ public class OrderService {
         // 4. Reduce stock
         inventory.setQuantity(inventory.getQuantity() - request.getQuantity());
         inventoryRepo.save(inventory);
+        
+        product.setQuantity(product.getQuantity() - request.getQuantity());
+        productRepo.save(product);
 
         // 5. Create Order
         Orders order = new Orders();

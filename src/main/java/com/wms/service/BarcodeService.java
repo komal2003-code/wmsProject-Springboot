@@ -13,39 +13,45 @@ import com.google.zxing.common.BitMatrix;
 
 @Service
 public class BarcodeService {
+	public String generateQR(String sku) {
 
-    public String generateQR(String sku) {
+	    if (sku == null || sku.isEmpty()) {
+	        throw new RuntimeException("SKU is null or empty");
+	    }
 
-        if (sku == null || sku.isEmpty()) {
-            throw new RuntimeException("SKU is null or empty");
-        }
+	    try {
+	        QRCodeWriter writer = new QRCodeWriter();
 
-        try {
-            QRCodeWriter writer = new QRCodeWriter();
+	        BitMatrix matrix = writer.encode(
+	                sku,
+	                BarcodeFormat.QR_CODE,
+	                200,
+	                200
+	        );
 
-            BitMatrix matrix = writer.encode(
-                    sku,
-                    BarcodeFormat.QR_CODE,
-                    200,
-                    200
-            );
+	        // ✅ folder create
+	        String dirPath = "src/main/resources/static/barcodes/";
 
-            File dir = new File("barcodes");
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
+	        File dir = new File(dirPath);
+	        if (!dir.exists()) {
+	            dir.mkdirs();
+	        }
 
-            String path = "barcodes/" + sku + ".png";
+	        // ✅ full file path
+	        String filePath = dirPath + sku + ".png";
 
-            Path filePath = FileSystems.getDefault().getPath(path);
+	        Path path = FileSystems.getDefault().getPath(filePath);
 
-            // overwrite safe
-            MatrixToImageWriter.writeToPath(matrix, "PNG", filePath);
+	        // ✅ write image
+	        MatrixToImageWriter.writeToPath(matrix, "PNG", path);
 
-            return path;
+	        // ✅ return URL path (frontend use)
+	        return "barcodes/" + sku + ".png";
 
-        } catch (Exception e) {
-            throw new RuntimeException("QR generation failed for SKU: " + sku, e);
-        }
-    }
+	    } catch (Exception e) {
+	        throw new RuntimeException("QR generation failed for SKU: " + sku, e);
+	    }
+	}
 }
+	
+    

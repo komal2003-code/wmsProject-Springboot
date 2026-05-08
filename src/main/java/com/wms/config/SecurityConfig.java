@@ -15,7 +15,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 
 // ✅ IMPORTANT IMPORT
 import org.springframework.http.HttpMethod;
-
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
@@ -23,45 +22,42 @@ public class SecurityConfig {
     @Autowired
     private JwtFilter jwtFilter;
 
-    // 🔐 Password Encoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // 🔐 Security Configuration
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-            // ❗ CSRF disable
             .csrf(csrf -> csrf.disable())
 
-            // ❗ Authorization rules
-            .authorizeHttpRequests(auth -> auth
+            // 🔥 IMPORTANT FIX
+            .sessionManagement(session -> session.sessionCreationPolicy(
+                    org.springframework.security.config.http.SessionCreationPolicy.STATELESS
+            ))
 
-                // 🔓 Public APIs
+            .authorizeHttpRequests(auth -> auth
+            		.requestMatchers("/barcodes/**").permitAll()
+            		.requestMatchers(HttpMethod.GET, "/barcodes/**").permitAll()
                 .requestMatchers("/auth/**").permitAll()
 
-                // ✅ GET products → anyone
                 .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
 
-                // 🔐 ADMIN only for changes
                 .requestMatchers(HttpMethod.POST, "/products/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/products/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/products/**").hasRole("ADMIN")
 
-                // 🔐 Other modules
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/operator/**").hasAnyRole("ADMIN", "OPERATOR")
-
-                // बाकी सगळं secure
+                //.requestMatchers("/barcodes/**").permitAll()
                 .anyRequest().authenticated()
             )
 
-            // 🔐 JWT Filter
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 }
+
