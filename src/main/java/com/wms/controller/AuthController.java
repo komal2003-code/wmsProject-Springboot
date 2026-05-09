@@ -1,15 +1,17 @@
-
 package com.wms.controller;
 
 import com.wms.entity.User;
 import com.wms.service.UserService;
 import com.wms.util.JwtUtil;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
 
     @Autowired
@@ -17,20 +19,24 @@ public class AuthController {
 
     @Autowired
     private JwtUtil jwtUtil;
-    
+
     @Autowired
     private PasswordEncoder encoder;
 
     @PostMapping("/register")
     public User register(@RequestBody User user) {
+
         return service.register(user);
     }
+
     @PostMapping("/login")
     public String login(@RequestBody User user) {
 
         User dbUser = service.findByUsername(user.getUsername());
 
-        if (!encoder.matches(user.getPassword(), dbUser.getPassword())) {
+        if (!encoder.matches(user.getPassword(),
+                dbUser.getPassword())) {
+
             throw new RuntimeException("Invalid credentials");
         }
 
@@ -39,11 +45,11 @@ public class AuthController {
                 dbUser.getRole()
         );
     }
-    
+
     @GetMapping("/hello")
     @PreAuthorize("hasRole('ADMIN')")
     public String hello() {
+
         return "Hello Admin";
     }
-    
 }

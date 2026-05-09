@@ -40,8 +40,11 @@ public class JwtFilter extends OncePerRequestFilter {
         // Skip JWT for public endpoints + static files
         if (path.startsWith("/barcodes/")
                 || path.startsWith("/auth/")
-                || path.startsWith("/error")){
+                || path.startsWith("/products")
+                || path.startsWith("/error")) {
+
             filterChain.doFilter(request, response);
+
             return;
         }
 
