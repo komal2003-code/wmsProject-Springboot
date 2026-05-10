@@ -1,6 +1,7 @@
 import { useState } from "react";
 import API from "../services/api";
 import { useNavigate } from "react-router-dom";
+import "./Login.css";
 
 function Login() {
 
@@ -20,7 +21,6 @@ function Login() {
 
       console.log("LOGIN RESPONSE :", res);
 
-      // JWT token save
       localStorage.setItem("token", res.data);
 
       alert("Login Success");
@@ -43,7 +43,7 @@ function Login() {
 
   return (
 
-    <div>
+    <div className="login-container">
 
       <h2>Login</h2>
 
