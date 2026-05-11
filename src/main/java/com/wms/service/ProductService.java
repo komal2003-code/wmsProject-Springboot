@@ -8,7 +8,7 @@ import com.wms.entity.Product;
 import com.wms.entity.InventoryItem;
 import com.wms.repository.ProductRepository;
 import com.wms.repository.InventoryItemRepository;
-
+import java.util.List;
 @Service
 public class ProductService {
 
@@ -62,5 +62,8 @@ public class ProductService {
 
         // Step 3: delete product (parent)
         repo.deleteById(id);
+    }
+    public List<Product> getAllProducts() {
+        return repo.findAll();
     }
 }
