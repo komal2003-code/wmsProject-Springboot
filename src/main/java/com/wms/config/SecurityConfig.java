@@ -1,24 +1,20 @@
 package com.wms.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpMethod;
 
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
 import org.springframework.security.config.http.SessionCreationPolicy;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.security.web.SecurityFilterChain;
-
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -39,52 +35,68 @@ public class SecurityConfig {
             throws Exception {
 
         http
+
+            // Disable CSRF
             .csrf(csrf -> csrf.disable())
 
+            // Stateless Session
             .sessionManagement(session ->
-                session.sessionCreationPolicy(
-                    SessionCreationPolicy.STATELESS
-                )
+                    session.sessionCreationPolicy(
+                            SessionCreationPolicy.STATELESS
+                    )
             )
 
+            // Authorization Rules
             .authorizeHttpRequests(auth -> auth
 
-                .requestMatchers("/auth/**").permitAll()
+                    // PUBLIC APIs
+                    .requestMatchers("/auth/**").permitAll()
 
-                .requestMatchers("/barcodes/**").permitAll()
+                    // Barcode Images Public
+                    .requestMatchers("/barcodes/**").permitAll()
 
-                .requestMatchers(
-                    HttpMethod.GET,
-                    "/products/**"
-                ).permitAll()
+                    // Error Page Public
+                    .requestMatchers("/error").permitAll()
 
-                .requestMatchers(
-                    HttpMethod.POST,
-                    "/products/**"
-                ).hasRole("ADMIN")
+                    // =========================
+                    // PRODUCTS APIs
+                    // =========================
 
-                .requestMatchers(
-                    HttpMethod.PUT,
-                    "/products/**"
-                ).hasRole("ADMIN")
+                    // GET -> ADMIN + OPERATOR
+                    .requestMatchers(
+                            HttpMethod.GET,
+                            "/products/**"
+                    ).hasAnyAuthority(
+                            "ROLE_ADMIN",
+                            "ROLE_OPERATOR"
+                    )
 
-                .requestMatchers(
-                    HttpMethod.DELETE,
-                    "/products/**"
-                ).hasRole("ADMIN")
+                    // POST -> ADMIN only
+                    .requestMatchers(
+                            HttpMethod.POST,
+                            "/products/**"
+                    ).hasAuthority("ROLE_ADMIN")
 
-                .requestMatchers("/admin/**")
-                .hasRole("ADMIN")
+                    // PUT -> ADMIN only
+                    .requestMatchers(
+                            HttpMethod.PUT,
+                            "/products/**"
+                    ).hasAuthority("ROLE_ADMIN")
 
-                .requestMatchers("/operator/**")
-                .hasAnyRole("ADMIN", "OPERATOR")
+                    // DELETE -> ADMIN only
+                    .requestMatchers(
+                            HttpMethod.DELETE,
+                            "/products/**"
+                    ).hasAuthority("ROLE_ADMIN")
 
-                .anyRequest().authenticated()
+                    // Any Other API
+                    .anyRequest().authenticated()
             )
 
+            // JWT Filter
             .addFilterBefore(
-                jwtFilter,
-                UsernamePasswordAuthenticationFilter.class
+                    jwtFilter,
+                    UsernamePasswordAuthenticationFilter.class
             );
 
         return http.build();

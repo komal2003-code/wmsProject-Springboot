@@ -23,7 +23,7 @@ public class ProductController {
 
     // ➕ ADD PRODUCT (ADMIN only)
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public Product addProduct(@RequestBody Product p) {
         return service.addProduct(p);
     }
@@ -43,7 +43,7 @@ public class ProductController {
 
     // ✏️ UPDATE PRODUCT (ADMIN only)
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+   // @PreAuthorize("hasRole('ADMIN')")
     public Product update(@PathVariable Long id, @RequestBody Product p) {
 
         Product existing = repo.findById(id)
@@ -58,7 +58,7 @@ public class ProductController {
 
     // ❌ DELETE PRODUCT (ADMIN only)
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public String delete(@PathVariable Long id) {
         repo.deleteById(id);
         return "Deleted Successfully";

@@ -81,8 +81,15 @@ The system also includes unit testing using JUnit 5 and Mockito for service laye
 - CSS
 
 ## Testing
+
+Implemented unit testing using:
 - JUnit 5
 - Mockito
+
+Tested:
+- Get all products
+- Save product
+- Delete product
 
 ## Tools
 - Postman
